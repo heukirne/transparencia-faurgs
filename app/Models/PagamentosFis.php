@@ -25,4 +25,14 @@ class PagamentosFis extends Model
 		return ModelHelper::realCurrency($value);
     }
 
+    public function getDataAttribute($value)
+    {
+        return ModelHelper::brDate($value);
+    }
+
+    public function CPFLink()
+    {
+        return preg_replace('/[^\d]/', '', $this->attributes['CPF']);
+    }
+
 }

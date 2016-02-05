@@ -43,6 +43,11 @@ class Projetos extends Model
 		return ModelHelper::realCurrency($value);
     }
     
+    public function getExecutadoAttribute($value)
+    {
+        return ModelHelper::realCurrency($value);
+    }
+
     public function getDataInicioAttribute($value)
     {
         return ModelHelper::brDate($value);
@@ -51,6 +56,11 @@ class Projetos extends Model
     public function getDataFimAttribute($value)
     {
         return ModelHelper::brDate($value);
+    }
+
+    public function Excedido()
+    {
+        return $this->attributes['Executado'] > $this->attributes['Valor'];
     }
 
 }

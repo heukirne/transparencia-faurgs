@@ -16,6 +16,9 @@
 				<table class="table table-striped projeto-table">
 					<tbody>
 						<tr><th>Valor</th><td>{{ $projeto->Valor }}</td></tr>
+						<tr><th>Executado</th>
+							<td class="{{ $projeto->Excedido() ? 'alert-danger' : '' }}">{{ $projeto->Executado }}</td>
+						</tr>
 						@if (!empty($projeto->Processo))
 							<tr><th>Processo</th><td><a href="https://www1.ufrgs.br/Protocolo/CadProc/processo/detalhes?CodProcesso={{ $projeto->Processo }}">{{ $projeto->Processo }}</a></td></tr>
 						@endif

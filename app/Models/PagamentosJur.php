@@ -30,4 +30,14 @@ class PagamentosJur extends Model
 		return ModelHelper::realCurrency($value);
     }
 
+    public function getNomeEmpresaAttribute($value)
+    {
+        return ModelHelper::removeAccent($value);
+    }
+
+    public function getTipoDespesaAttribute($value)
+    {
+        return ModelHelper::removeAccent($value);
+    }
+
 }

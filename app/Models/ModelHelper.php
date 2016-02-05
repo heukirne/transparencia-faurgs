@@ -27,7 +27,16 @@ class ModelHelper
 
     public static function urlDecode($value)
     {
-        return str_replace('$','/',urldecode(utf8_decode($value)));
+        return str_replace('$','/',urldecode($value));
+    }    
+
+    public static function soma($items)
+    {
+        $sum = 0;
+        foreach($items as $item) {
+            $sum += preg_replace('/[^\d]/', '', $item->Valor)/100;
+        }
+        return self::realCurrency($sum);
     }    
 
 }

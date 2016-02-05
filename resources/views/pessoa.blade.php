@@ -1,63 +1,88 @@
 @extends('layouts.app')
 
-@section('title', $pessoa?$pessoa->CPF:'Sem descrição')
+@section('title', isset($pessoas[0])?$pessoas[0]->CPF:'Sem descrição')
 
 @inject('modelHelper', 'App\Models\ModelHelper')
 
 @section('content')	
 	
-	<div class="panel panel-default">
-		@if (!empty($pessoa))				
-			<div class="panel-heading">
-				<a href="http://www.portaldatransparencia.gov.br/servidores/Servidor-ListaServidores.asp?TextoPesquisa={{$pessoa->Nome}}">
-					{{$pessoa->Nome}} ({{$pessoa->CPF}})
-				</a> 
-				<i class="fa fa-external-link"></i>
-			</div>
+	@if ($alert)
+		<div class="alert alert-warning">
+			A comparação de CPF leva em conta somente 6 dígitos, por isso pode haver inconsistências.
+		</div>
+	@endif
 
-			<div class="panel-body">
-				<table class="table table-striped pessoa-table">
-					<tbody>
-						<tr>
-							<th>Cargo</th>
-							<td>
-								<a href="http://gemeos.org/tp/servidor/classe?id={{ $pessoa->idDescricaoCargo }}">{{ $pessoa->DESCRICAO_CARGO }}</a> 
-								<a href="http://gemeos.org/tp/servidor/padrao?id={{ $pessoa->idClasseCargo }}">{{ $pessoa->CLASSE_CARGO }}</a> 
-								<a href="http://gemeos.org/tp/servidor/nivel?id={{ $pessoa->idPadraoCargo }}">{{ $pessoa->PADRAO_CARGO }}</a> 
-								<a href="http://gemeos.org/tp/servidor/detalhesN?id={{ $pessoa->idNivelCargo }}">{{ $pessoa->NIVEL_CARGO }}</a> 
-								<i class="fa fa-external-link"></i>
-							</td>
-						</tr>
-						<tr><th>Situação</th><td>{{ $pessoa->SITUACAO_VINCULO }}</td></tr>
-						<tr><th>Ingresso</th><td>{{ $pessoa->DATA_INGRESSO_ORGAO }}</td></tr>
-						<tr><th>Jornada de Trabalho</th><td>{{ $pessoa->JORNADA_DE_TRABALHO }}</td></tr>
-						<tr>
-							<th>Lotação</th>
-							<td><a href="http://gemeos.org/tp/servidor/detalhes?id={{ $pessoa->COD_UORG_LOTACAO }}">{{ $pessoa->UORG_LOTACAO }}</a> <i class="fa fa-external-link"></i> </td>
-						</tr>
-						<tr>
-							<th>Exercício</th>
-							<td><a href="http://gemeos.org/tp/servidor/unidade?id={{ $pessoa->COD_ORG_EXERCICIO }}">{{ $pessoa->ORG_EXERCICIO }}</a> <i class="fa fa-external-link"></i> </td>
-						</tr>
-						<tr><th>Função</th><td>{{ $pessoa->FUNCAO }}</td></tr>
-						<tr><th>Atividade</th><td>{{ $pessoa->ATIVIDADE }}</td></tr>
-					</tbody>
-				</table>
+	
+	@if (count($pessoas) > 0)	
+		@foreach ($pessoas as $pessoa)			
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<a href="http://www.portaldatransparencia.gov.br/servidores/Servidor-ListaServidores.asp?TextoPesquisa={{$pessoa->Nome}}">
+						{{$pessoa->Nome}} ({{$pessoa->CPF}})
+					</a> 
+					<i class="fa fa-external-link"></i>
+					@if (count($pessoas)>1)
+				    	<button type="button" class="btn btn-sm btn-default collapsed pull-right" data-toggle="collapse" data-target="#M{{$pessoa->Matricula}}"></button>
+				    @endif
+				</div>
+
+				<div class="panel-body {{ count($pessoas)==1 ? '' : 'collapse' }}" id="M{{$pessoa->Matricula}}">
+					<table class="table table-striped pessoa-table">
+						<tbody>
+							<tr>
+								<th>Cargo</th>
+								<td>
+									<a href="http://gemeos.org/tp/servidor/classe?id={{ $pessoa->idDescricaoCargo }}">{{ $pessoa->DESCRICAO_CARGO }}</a> 
+									<a href="http://gemeos.org/tp/servidor/padrao?id={{ $pessoa->idClasseCargo }}">{{ $pessoa->CLASSE_CARGO }}</a> 
+									<a href="http://gemeos.org/tp/servidor/nivel?id={{ $pessoa->idPadraoCargo }}">{{ $pessoa->PADRAO_CARGO }}</a> 
+									<a href="http://gemeos.org/tp/servidor/detalhesN?id={{ $pessoa->idNivelCargo }}">{{ $pessoa->NIVEL_CARGO }}</a> 
+									<i class="fa fa-external-link"></i>
+								</td>
+							</tr>
+							<tr><th>Situação</th><td>{{ $pessoa->SITUACAO_VINCULO }}</td></tr>
+							<tr><th>Ingresso</th><td>{{ $pessoa->DATA_INGRESSO_ORGAO }}</td></tr>
+							<tr><th>Jornada de Trabalho</th><td>{{ $pessoa->JORNADA_DE_TRABALHO }}</td></tr>
+							<tr>
+								<th>Lotação</th>
+								<td><a href="http://gemeos.org/tp/servidor/detalhes?id={{ $pessoa->COD_UORG_LOTACAO }}">{{ $pessoa->UORG_LOTACAO }}</a> <i class="fa fa-external-link"></i> </td>
+							</tr>
+							<tr>
+								<th>Exercício</th>
+								<td><a href="http://gemeos.org/tp/servidor/unidade?id={{ $pessoa->COD_ORG_EXERCICIO }}">{{ $pessoa->ORG_EXERCICIO }}</a> <i class="fa fa-external-link"></i> </td>
+							</tr>
+							<tr><th>Função</th><td>{{ $pessoa->FUNCAO }}</td></tr>
+							<tr><th>Atividade</th><td>{{ $pessoa->ATIVIDADE }}</td></tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
-		@else
+		@endforeach
+	@else
+		<div class="panel panel-default">
 			<div class="panel-heading">
 				Sem dados funcionais
 			</div>
-		@endif
+		</div>
+	@endif
+	
 
-		@if (count($totals) > 0)
+	@if (count($totals) > 0)
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				Total recebido por CPF
+			</div>
+
 			<div class="panel-body">
-				<span>Total recebido por CPF</span>
 				<table class="table table-striped total-table">
 					<tbody>
 						@foreach ($totals as $total)
 							<tr>
-								<th>{{ $total->CPF }}</th>
+								<th>
+									<a href="/faurgs/fetch/{{ $total->CPFLink() }}">
+									{{ $total->CPF }}
+									</a>
+									<i class="fa fa-external-link"></i>
+								</th>
 								<td>de {{ $total->AnoIni }} à {{ $total->AnoFim }}</td>
 								<td>{{ $total->Projetos }} projetos</td>
 								<td>{{ $total->Total }}</td>
@@ -66,13 +91,9 @@
 					</tbody>
 				</table>
 			</div>	
-		@endif
-
-	</div>
-
-	<div class="alert alert-info">
-		* a lista leva em conta somente 6 dígitos do CPF, por isso pode haver inconsistências
-	</div>
+		</div>
+	@endif
+	
 
 	@if (count($projetos) > 0)
 		<div class="panel panel-default">

@@ -8,6 +8,7 @@ use App\Models\Orgaos;
 use App\Models\Projetos;
 use App\Models\PagamentosFis;
 use App\Models\PagamentosJur;
+use App\Models\ModelHelper;
 
 class ProjetoController extends Controller
 {
