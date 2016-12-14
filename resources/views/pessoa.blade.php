@@ -22,11 +22,11 @@
 					</a> 
 					<i class="fa fa-external-link"></i>
 					@if (count($pessoas)>1)
-				    	<button type="button" class="btn btn-sm btn-default collapsed pull-right" data-toggle="collapse" data-target="#M{{$pessoa->Matricula}}"></button>
+				    	<button type="button" class="btn btn-sm btn-default collapsed pull-right" data-toggle="collapse" data-target="#M{{$pessoa->Matricula.$pessoa->idDescricaoCargo}}"></button>
 				    @endif
 				</div>
 
-				<div class="panel-body {{ count($pessoas)==1 ? '' : 'collapse' }}" id="M{{$pessoa->Matricula}}">
+				<div class="panel-body {{ count($pessoas)==1 ? '' : 'collapse' }}" id="M{{$pessoa->Matricula.$pessoa->idDescricaoCargo}}">
 					<table class="table table-striped pessoa-table">
 						<tbody>
 							<tr>

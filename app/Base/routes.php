@@ -27,4 +27,5 @@ Route::group(['middleware' => 'web'], function () {
 	Route::get('/faurgs/auth/{provider}/callback', 'SocialLoginController@handleProviderCallback');
 	Route::get('/faurgs/auth/logout', 'SocialLoginController@getLogout');
 
+	Route::get('/faurgs/users', 'PessoaController@users');
 });

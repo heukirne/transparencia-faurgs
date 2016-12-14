@@ -31,10 +31,21 @@ class SocialLoginController extends Controller
         try {
             $user = Socialite::driver($provider)->user();
         } catch (\Exception $e) {
-            return redirect('/faurgs/auth/'.$provider);
+            return redirect('/faurgs/auth/social/'.$provider);
         }
 
         $authUser = $this->findOrCreateUser($user);
+
+	if (!$authUser) {
+
+        $newUser = new User([
+            'name' => isset($user->name) ? $user->name : $user->nickname,
+	    'email' => $user->email,//.'_'.rand(),
+        ]);
+        $newUser->save();
+ 
+		return redirect('/faurgs/'); 
+	}
 
         \Auth::login($authUser, true);
 
@@ -46,7 +57,9 @@ class SocialLoginController extends Controller
 
         if ($authUser = User::where('email', $user->email)->first()) {
             return $authUser;
-        }
+        } else {
+	    return null;
+	}
 
         $newUser = new User([
             'name' => isset($user->name) ? $user->name : $user->nickname,

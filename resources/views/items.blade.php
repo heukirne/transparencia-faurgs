@@ -17,7 +17,7 @@
 				<table class="table table-striped item-table">
 					<thead>
 						<th>Nome</th>
-						@if ($link == 'projeto')
+						@if ($link == 'projeto'|| $link == 'pessoa')
 							<th class="cell-right">Executado</th>
 						@endif
 						<th class="cell-right">Valor</th>
@@ -44,6 +44,10 @@
 									<td class="cell-right {{ $item->Excedido() ? 'alert-danger' : '' }}">
 										{{ $item->Executado }}
 									</td>
+								@elseif ($link == 'pessoa')
+                                                                        <td class="cell-right {{ $item->Projetos > 10 ? 'alert-danger' : '' }}">
+                                                                                {{ $item->Projetos }}
+                                                                        </td>	
 								@endif
 								<td class="cell-right">
 									{{ $item->Valor }}

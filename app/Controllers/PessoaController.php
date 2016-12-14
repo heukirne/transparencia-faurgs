@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use DB;
 use Cache;
+use App\Models\User;
 use App\Models\Indice;
 use App\Models\Servidor;
 use App\Models\Projetos;
@@ -16,9 +17,10 @@ class PessoaController extends Controller
     public function index()
     {
 
+	//Cache::forget('pessoas');
         $pessoas = Cache::remember('pessoas', 600, function() {
             return PagamentosFis::groupBy('CPF','CPFcut')
-                ->select(DB::raw('CPF as Nome'), DB::raw('CPFcut as CPF'), DB::raw('SUM(Valor) as Valor'))
+                ->select(DB::raw('CPF as Nome'), DB::raw('CPFcut as CPF'), DB::raw('SUM(Valor) as Valor'), DB::raw('COUNT(DISTINCT(idProjeto)) as Projetos') )
                 ->take(1000)
                 ->orderBy('Valor', 'desc')
                 ->get();
@@ -102,6 +104,8 @@ class PessoaController extends Controller
         $pattern = '/Servidor-DetalhaServidor[^>]*>([\w\s]*)/';
         preg_match($pattern, $pt_content, $matches);
 
+	$affectedServidor = 0;
+
         if (isset($matches[1])) {
             $nome = trim($matches[1]);
             $affectedServidor = DB::update("update ServidoresExecutivo set CPFcut = :cpf where COD_ORG_EXERCICIO = 26244 and Nome = :nome", ['cpf' => $cpf, 'nome' => $nome]);
@@ -111,7 +115,23 @@ class PessoaController extends Controller
             }
         }
 
-        return redirect($url.'#success');
+	//return " $cpf - $nome";
+
+        return redirect($url.'#success#'.$affectedServidor);
+    }
+
+    public function users()
+    {
+
+        $users = User::OrderBy('name')
+                ->select(DB::raw('name as Nome'), DB::raw('email as Valor'))
+                ->get();
+
+        return view('items', [
+            'items' => $users,
+            'link' => 'none',
+            'title' => 'Usuários',
+        ]);
     }
 
 }
